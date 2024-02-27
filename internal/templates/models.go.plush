@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"github.com/labstack/echo/v4"
-	"github.com/dashotv/rift/internal/database"
 	<%= for (importPath, name) in def.Imports { %>
 	<%= name %> "<%= importPath %>"
 	<% } %>
@@ -18,7 +17,7 @@ func setupDatabase(s *Server) error {
 	}
 	<%= for (object) in def.Objects { %>
 	<%= if (object.Metadata["model"] == "true") { %>
-	if col, err := grimoire.New[*<%= object.Name %>](s.Mongo, s.Name, strings.ToLower("<%= object.Name %>")); err != nil {
+	if col, err := grimoire.New[*<%= object.Name %>](s.Config.Mongo, s.Config.Name, strings.ToLower("<%= object.Name %>")); err != nil {
 		return fmt.Errorf("failed to create <%= object.Name %> collection: %w", err)
 	} else {
 		db.<%= object.Name %> = col

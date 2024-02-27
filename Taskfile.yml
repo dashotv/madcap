@@ -9,8 +9,6 @@ tasks:
     cmds:
       - go install github.com/pacedotdev/oto@latest
       - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
-      - go get github.com/dotenv-org/godotenvvault
-      - go get github.com/dashotv/grimoire
 
   build:
     desc: "build the compiled binary"

@@ -31,6 +31,12 @@ type connection struct {
 	File *grimoire.Store[*File]
 }
 
+type EmptyResponse struct {
+
+	// Error is string explaining what went wrong. Empty if everything was fine.
+	Error string `json:"error,omitempty"`
+}
+
 // File represents a file in the file system.
 type File struct {
 	*grimoire.Document

@@ -10,9 +10,12 @@ type File struct {
 
 type FileService interface {
 	Index(IndexRequest) FilesResponse
+	Update(KeyRequest) EmptyResponse
 }
 
 type FilesResponse struct {
 	Count  int     `json:"count"`
 	Result []*File `json:"files"`
 }
+
+type EmptyResponse struct{}

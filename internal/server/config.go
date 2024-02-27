@@ -20,9 +20,11 @@ func setupConfig(s *Server) error {
 }
 
 type Config struct {
-	Name  string `env:"NAME" envDefault:"madcap"`
-	Mongo string `env:"MONGO" envDefault:"mongodb://localhost:27017"`
-	Port  string `env:"PORT" envDefault:"9020"`
+	Name      string `env:"NAME" envDefault:"madcap"`
+	Mongo     string `env:"MONGO" envDefault:"mongodb://localhost:27017"`
+	Port      string `env:"PORT" envDefault:"9020"`
+	PlexToken string `env:"PLEX_TOKEN"`
+	PlexURL   string `env:"PLEX_URL"`
 }
 
 func (c *Config) Validate() error {

@@ -17,6 +17,7 @@ services:
       - "9020:9020"
     volumes:
       - ./:/app
+      - /Volumes/media:/mnt/media
     env_file:
       - .env
 

@@ -9,6 +9,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/term"
+
+	"github.com/dashotv/madcap/internal/plex"
 )
 
 type Server struct {
@@ -17,10 +19,9 @@ type Server struct {
 	Router *echo.Echo
 	Cron   *cron.Cron
 	Logger *zap.SugaredLogger
+	Plex   *plex.Client
 
 	db *connection
-	// bg      *workers.Client
-	// myanime *scraper.MyAnime
 
 	// Services
 	page *fileService
@@ -39,10 +40,13 @@ func New() (*Server, error) {
 	if err := setupDatabase(s); err != nil {
 		return nil, err
 	}
+	if err := setupPlex(s); err != nil {
+		return nil, err
+	}
 	setupRouter(s)
 	setupCron(s)
 
-	file := &fileService{log: logger.Named("services.file")}
+	file := &fileService{log: logger.Named("services.file"), server: s}
 
 	g := s.Router.Group("/api")
 	RegisterFileService(g, file)
