@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  madcap:
+    image: cosmtrek/air
+    working_dir: /app
+    container_name: madcap
+    # build:
+    #   context: .
+    #   dockerfile_inline: |
+    #     FROM cosmtrek/air:latest
+    #     RUN apt update && \
+    #       apt install -y python3-launchpadlib software-properties-common && \
+    #       add-apt-repository ppa:tomtomtom/yt-dlp && \
+    #       apt update && \
+    #       apt install -y ffmpeg yt-dlp
+    ports:
+      - "9020:9020"
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+
+  db:
+    image: mongo:7.0.2
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
+
+volumes:
+  db:
+    driver: local
