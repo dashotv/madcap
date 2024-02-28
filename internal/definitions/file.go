@@ -14,7 +14,7 @@ type FileService interface {
 }
 
 type FilesResponse struct {
-	Count  int     `json:"count"`
+	Count  int64   `json:"count"`
 	Result []*File `json:"files"`
 }
 

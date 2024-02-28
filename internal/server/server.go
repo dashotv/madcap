@@ -11,6 +11,7 @@ import (
 	"golang.org/x/term"
 
 	"github.com/dashotv/madcap/internal/plex"
+	"github.com/dashotv/madcap/internal/workers"
 )
 
 type Server struct {
@@ -22,6 +23,7 @@ type Server struct {
 	Plex   *plex.Client
 
 	db *connection
+	bg *workers.Client
 
 	// Services
 	page *fileService
@@ -32,6 +34,7 @@ func New() (*Server, error) {
 
 	s := &Server{
 		Logger: logger,
+		bg:     workers.New(logger.Named("workers")),
 	}
 
 	if err := setupConfig(s); err != nil {
@@ -58,6 +61,12 @@ func (s *Server) Start() error {
 	if s.Cron != nil {
 		go s.Cron.Run()
 	}
+
+	count, err := s.db.File.Query().Count()
+	if err != nil {
+		return err
+	}
+	s.Logger.Debugf("managing %d files", count)
 
 	return s.Router.Start(":" + s.Config.Port)
 }

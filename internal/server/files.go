@@ -11,7 +11,12 @@ type fileService struct {
 }
 
 func (s *fileService) Index(c echo.Context, req *IndexRequest) (*FilesResponse, error) {
-	return &FilesResponse{}, nil
+	count, err := s.server.db.File.Query().Count()
+	if err != nil {
+		return nil, err
+	}
+
+	return &FilesResponse{Count: count}, nil
 }
 func (s *fileService) Update(c echo.Context, req *KeyRequest) (*EmptyResponse, error) {
 	go s.server.walkFiles()

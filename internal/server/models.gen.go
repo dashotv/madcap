@@ -22,6 +22,7 @@ func setupDatabase(s *Server) error {
 		db.File = col
 	}
 
+	s.db = db
 	return nil
 }
 
@@ -32,21 +33,23 @@ type connection struct {
 }
 
 type EmptyResponse struct {
-
 	// Error is string explaining what went wrong. Empty if everything was fine.
 	Error string `json:"error,omitempty"`
 }
 
 // File represents a file in the file system.
-type File struct {
-	*grimoire.Document
+type File struct { // model
+	grimoire.Document `bson:",inline"` // includes default model settings
+	//ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
+	//CreatedAt time.Time          `bson:"created_at" json:"created_at"`
+	//UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 	Path       string `json:"path"`
 	Size       int64  `json:"size"`
 	ModifiedAt string `json:"modified_at"`
 }
 
 type FilesResponse struct {
-	Count  int     `json:"count"`
+	Count  int64   `json:"count"`
 	Result []*File `json:"files"`
 	// Error is string explaining what went wrong. Empty if everything was fine.
 	Error string `json:"error,omitempty"`
