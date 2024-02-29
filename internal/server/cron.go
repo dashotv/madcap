@@ -16,7 +16,7 @@ func setupCron(s *Server) {
 	s.Cron = cron.New()
 
 	s.Cron.AddFunc("*/15 * * * *", s.walkFiles)
-	// s.Cron.AddFunc("15 0 * * *", s.updateFiles)
+	s.Cron.AddFunc("5 * * *", s.updateFiles)
 }
 
 func (s *Server) walkFiles() {
