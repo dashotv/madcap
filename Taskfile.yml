@@ -43,6 +43,11 @@ tasks:
     cmds:
       - scripts/generate.sh
 
+  dotenv:
+    desc: "create the .env.vault file"
+    cmds:
+      - npx dotenv-vault local build
+
   clean:
     desc: "remove the database"
     cmds:

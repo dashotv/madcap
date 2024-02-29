@@ -1,3 +1,8 @@
 /data
 /tmp
 madcap
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
