@@ -21,6 +21,7 @@ func setupDatabase(s *Server) error {
 		return fmt.Errorf("failed to create <%= object.Name %> collection: %w", err)
 	} else {
 		db.<%= object.Name %> = col
+		grimoire.Indexes(col, &<%= object.Name %>{})
 	}
 	<% } %>
 	<% } %>

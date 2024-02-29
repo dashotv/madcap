@@ -20,6 +20,7 @@ func setupDatabase(s *Server) error {
 		return fmt.Errorf("failed to create File collection: %w", err)
 	} else {
 		db.File = col
+		grimoire.Indexes(col, &File{})
 	}
 
 	s.db = db
