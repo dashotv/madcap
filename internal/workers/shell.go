@@ -1,8 +1,22 @@
 package workers
 
 import (
+	"os/exec"
+
 	"github.com/go-cmd/cmd"
 )
+
+var shell string
+
+func init() {
+	for _, n := range []string{"bash", "sh"} {
+		path, err := exec.LookPath(n)
+		if err == nil {
+			shell = path
+			break
+		}
+	}
+}
 
 type ShellOptions struct {
 	Out func(string, string)
@@ -25,7 +39,7 @@ func Shell(command string, options ShellOptions) (cmd.Status, error) {
 	}
 
 	// Create Cmd with options
-	envCmd := cmd.NewCmdOptions(cmdOptions, "bash", "-c", command)
+	envCmd := cmd.NewCmdOptions(cmdOptions, shell, "-c", command)
 
 	// Print STDOUT and STDERR lines streaming from Cmd
 	doneChan := make(chan struct{})
