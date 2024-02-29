@@ -151,7 +151,9 @@ func (w *Walker) getDirectories() error {
 		for _, loc := range lib.Locations {
 			// w.logger.Infow("walking", "library", lib.Title, "path", loc.Path)
 			// workers.Shell(w.logger.Named("shell"), loc.Path, "find", loc.Path, "-type", "f", "-exec", "stat", "{}", "+")
-			status, err := workers.Shell(fmt.Sprintf("find '%s' -maxdepth 1 -mindepth 1 -type d", loc.Path), workers.ShellOptions{Out: out, Err: err})
+			cmd := fmt.Sprintf("find '%s' -maxdepth 1 -mindepth 1 -type d", loc.Path)
+			w.logger.Warnf("running command: %s", cmd)
+			status, err := workers.Shell(cmd, workers.ShellOptions{Out: out, Err: err})
 			if err != nil {
 				return err
 			}
