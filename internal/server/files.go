@@ -16,7 +16,12 @@ func (s *fileService) Index(c echo.Context, req *IndexRequest) (*FilesResponse, 
 		return nil, err
 	}
 
-	return &FilesResponse{Count: count}, nil
+	files, err := s.server.db.File.Query().Desc("modified_at").Run()
+	if err != nil {
+		return nil, err
+	}
+
+	return &FilesResponse{Count: count, Result: files}, nil
 }
 
 func (s *fileService) Walk(c echo.Context, req *KeyRequest) (*EmptyResponse, error) {
