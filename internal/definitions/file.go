@@ -3,9 +3,9 @@ package definitions
 // File represents a file in the file system.
 // model: true
 type File struct {
-	Path       string `json:"path"`
-	Size       int64  `json:"size"`
-	ModifiedAt int64  `json:"modified_at"`
+	Path       string `json:"path" bson:"path" grimoire:"index"`
+	Size       int64  `json:"size" bson:"size"`
+	ModifiedAt int64  `json:"modified_at" bson:"modified_at" grimoire:"index"`
 }
 
 type FileService interface {

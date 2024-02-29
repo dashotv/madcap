@@ -43,7 +43,7 @@ type connection struct {
 	//ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	//CreatedAt time.Time          `bson:"created_at" json:"created_at"`
 	//UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`<% } %>
-	<%= for (field) in object.Fields { %><%= format_comment_text(field.Comment) %><%= field.Name %> <%= if (field.Type.Multiple == true) { %>[]<% } %><%= field.Type.TypeName %> `json:"<%= field.NameLowerCamel %><%= if (field.OmitEmpty) { %>,omitempty<% } %>"`
+	<%= for (field) in object.Fields { %><%= format_comment_text(field.Comment) %><%= field.Name %> <%= if (field.Type.Multiple == true) { %>[]<% } %><%= field.Type.TypeName %> <%= if (object.Metadata["model"] == "true" && len(field.ParsedTags) != 0) {%>`<%= for (tagName, tagValue) in field.ParsedTags { %><%= tagName %>:"<%= tagValue.Value %>" <% } %>`<% } else { %>`json:"<%= field.NameLowerCamel %><%= if (field.OmitEmpty) { %>,omitempty<% } %>"`<% } %>
 <% } %>
 }
 <% } %>

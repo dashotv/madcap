@@ -43,9 +43,9 @@ type File struct { // model
 	//ID        primitive.ObjectID `bson:"_id,omitempty" json:"id"`
 	//CreatedAt time.Time          `bson:"created_at" json:"created_at"`
 	//UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
-	Path       string `json:"path"`
-	Size       int64  `json:"size"`
-	ModifiedAt int64  `json:"modified_at"`
+	Path       string `json:"path" bson:"path" grimoire:"index" `
+	Size       int64  `json:"size" bson:"size" `
+	ModifiedAt int64  `json:"modified_at" bson:"modified_at" grimoire:"index" `
 }
 
 type FilesResponse struct {
