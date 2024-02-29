@@ -38,6 +38,12 @@ type counter struct {
 	v int
 }
 
+func (c *counter) Inc() {
+	c.Lock()
+	c.v++
+	c.Unlock()
+}
+
 func (w *Walker) Walk() error {
 	start := time.Now()
 	defer func() { w.logger.Infow("walk", "duration", time.Since(start)) }()

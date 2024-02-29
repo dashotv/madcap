@@ -11,6 +11,7 @@ type File struct {
 type FileService interface {
 	Index(IndexRequest) FilesResponse
 	Update(KeyRequest) EmptyResponse
+	Stat(KeyRequest) EmptyResponse
 }
 
 type FilesResponse struct {
