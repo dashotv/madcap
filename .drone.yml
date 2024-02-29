@@ -33,7 +33,7 @@ steps:
         from_secret: ssh_key
       command_timeout: 2m
       script:
-        - cd /srv/dashotv && docker compose pull -q madcap && docker compose up -d --no-deps madcap
+        - cd /srv/madcap && docker compose pull -q madcap && docker compose up -d --no-deps madcap
   - name: slack
     image: plugins/slack
     settings:
