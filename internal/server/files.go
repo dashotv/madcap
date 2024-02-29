@@ -19,7 +19,7 @@ func (s *fileService) Index(c echo.Context, req *IndexRequest) (*FilesResponse, 
 	return &FilesResponse{Count: count}, nil
 }
 
-func (s *fileService) Update(c echo.Context, req *KeyRequest) (*EmptyResponse, error) {
+func (s *fileService) Walk(c echo.Context, req *KeyRequest) (*EmptyResponse, error) {
 	go s.server.walkFiles()
 	return &EmptyResponse{}, nil
 }

@@ -10,7 +10,7 @@ type File struct {
 
 type FileService interface {
 	Index(IndexRequest) FilesResponse
-	Update(KeyRequest) EmptyResponse
+	Walk(KeyRequest) EmptyResponse
 	Stat(KeyRequest) EmptyResponse
 }
 
