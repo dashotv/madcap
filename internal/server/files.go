@@ -28,8 +28,3 @@ func (s *fileService) Walk(c echo.Context, req *KeyRequest) (*EmptyResponse, err
 	go s.server.walkFiles()
 	return &EmptyResponse{}, nil
 }
-
-func (s *fileService) Stat(c echo.Context, req *KeyRequest) (*EmptyResponse, error) {
-	go s.server.updateFiles()
-	return &EmptyResponse{}, nil
-}

@@ -45,11 +45,9 @@ func (c *counter) Inc() {
 }
 
 func (w *Walker) Walk() error {
-	start := time.Now()
-	defer func() { w.logger.Infow("walk", "duration", time.Since(start)) }()
-
 	c := counter{v: 0}
-	defer func() { w.logger.Infow("files", "count", c.v) }()
+	start := time.Now()
+	defer func() { w.logger.Infow("walk", "duration", time.Since(start), "count", c.v) }()
 
 	eg := new(errgroup.Group)
 
@@ -66,7 +64,7 @@ func (w *Walker) Walk() error {
 		defer close(w.files)
 
 		for dir := range w.directories {
-			if err := w.getDirFiles(dir); err != nil {
+			if err := w.getFiles(dir); err != nil {
 				return err
 			}
 		}
@@ -79,7 +77,7 @@ func (w *Walker) Walk() error {
 				c.Lock()
 				c.v++
 				c.Unlock()
-				if err := w.createFile(line); err != nil {
+				if err := w.updateFile(line); err != nil {
 					return err
 				}
 			}
@@ -112,19 +110,19 @@ func (w *Walker) createFile(line string) error {
 }
 
 func (w *Walker) updateFile(line string) error {
-	info, err := os.Stat(line)
-	if err != nil {
-		w.logger.Errorw("stat", "error", err)
-		return err
-	}
-
 	file, err := w.db.FileByPath(line)
 	if err != nil {
 		w.logger.Errorw("file", "error", err)
 		return err
 	}
 
-	file.ModifiedAt = info.ModTime().Format(time.RFC3339)
+	info, err := os.Stat(line)
+	if err != nil {
+		w.logger.Errorw("stat", "error", err)
+		return err
+	}
+
+	file.ModifiedAt = info.ModTime().Unix()
 	file.Size = info.Size()
 
 	if err := w.db.File.Save(file); err != nil {
@@ -152,13 +150,13 @@ func (w *Walker) getDirectories() error {
 			// w.logger.Infow("walking", "library", lib.Title, "path", loc.Path)
 			// workers.Shell(w.logger.Named("shell"), loc.Path, "find", loc.Path, "-type", "f", "-exec", "stat", "{}", "+")
 			cmd := fmt.Sprintf("find '%s' -maxdepth 1 -mindepth 1 -type d", loc.Path)
-			w.logger.Warnf("running command: %s", cmd)
+			// w.logger.Debugf("running command: %s", cmd)
 			status, err := workers.Shell(cmd, workers.ShellOptions{Out: out, Err: err})
 			if err != nil {
 				return err
 			}
 			if status.Exit != 0 {
-				return fmt.Errorf("command failed with exit code %d", status.Exit)
+				return fmt.Errorf("command '%s' failed with exit code %d", cmd, status.Exit)
 			}
 		}
 	}
@@ -166,17 +164,7 @@ func (w *Walker) getDirectories() error {
 	return nil
 }
 
-// func (w *Walker) getFiles() error {
-// 	for _, dir := range w.Directories {
-// 		if err := w.getDirFiles(dir); err != nil {
-// 			return err
-// 		}
-// 	}
-//
-// 	return nil
-// }
-
-func (w *Walker) getDirFiles(dir string) error {
+func (w *Walker) getFiles(dir string) error {
 	out := func(name, line string) {
 		w.files <- line
 	}
@@ -184,13 +172,15 @@ func (w *Walker) getDirFiles(dir string) error {
 		w.logger.Errorw("shell", "error", line)
 	}
 
+	cmd := fmt.Sprintf("find '%s' -type f", dir)
 	// status, err := workers.Shell(out, err, "find", dir, "-type", "f", "-exec", "stat", "{}", "+")
-	status, e := workers.Shell(fmt.Sprintf("find '%s' -type f", dir), workers.ShellOptions{Out: out, Err: err})
+	// w.logger.Debugf("running command: %s", cmd)
+	status, e := workers.Shell(cmd, workers.ShellOptions{Out: out, Err: err})
 	if e != nil {
 		return e
 	}
 	if status.Exit != 0 {
-		return fmt.Errorf("command failed with exit code %d", status.Exit)
+		return fmt.Errorf("command '%s' failed with exit code %d", cmd, status.Exit)
 	}
 	return nil
 }

@@ -11,7 +11,6 @@ import (
 
 type FileService interface {
 	Index(echo.Context, *IndexRequest) (*FilesResponse, error)
-	Stat(echo.Context, *KeyRequest) (*EmptyResponse, error)
 	Walk(echo.Context, *KeyRequest) (*EmptyResponse, error)
 }
 
@@ -25,7 +24,6 @@ func RegisterFileService(e *echo.Group, fileService FileService) {
 		fileService: fileService,
 	}
 	e.POST("/FileService.Index", handler.handleIndex)
-	e.POST("/FileService.Stat", handler.handleStat)
 	e.POST("/FileService.Walk", handler.handleWalk)
 }
 
@@ -36,20 +34,6 @@ func (s *fileServiceServer) handleIndex(c echo.Context) error {
 	}
 
 	response, err := s.fileService.Index(c, request)
-	if err != nil {
-		return fmt.Errorf("handling request: %w", err)
-	}
-
-	return c.JSON(http.StatusOK, response)
-}
-
-func (s *fileServiceServer) handleStat(c echo.Context) error {
-	request := &KeyRequest{}
-	if err := c.Bind(request); err != nil {
-		return fmt.Errorf("binding request: %w", err)
-	}
-
-	response, err := s.fileService.Stat(c, request)
 	if err != nil {
 		return fmt.Errorf("handling request: %w", err)
 	}

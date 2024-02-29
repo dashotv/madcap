@@ -45,7 +45,7 @@ type File struct { // model
 	//UpdatedAt time.Time          `bson:"updated_at" json:"updated_at"`
 	Path       string `json:"path"`
 	Size       int64  `json:"size"`
-	ModifiedAt string `json:"modified_at"`
+	ModifiedAt int64  `json:"modified_at"`
 }
 
 type FilesResponse struct {

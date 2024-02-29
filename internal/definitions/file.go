@@ -5,13 +5,12 @@ package definitions
 type File struct {
 	Path       string `json:"path"`
 	Size       int64  `json:"size"`
-	ModifiedAt string `json:"modified_at"`
+	ModifiedAt int64  `json:"modified_at"`
 }
 
 type FileService interface {
 	Index(IndexRequest) FilesResponse
 	Walk(KeyRequest) EmptyResponse
-	Stat(KeyRequest) EmptyResponse
 }
 
 type FilesResponse struct {
