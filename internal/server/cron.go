@@ -37,21 +37,23 @@ func (s *Server) walkFiles() {
 }
 
 func (s *Server) updateFiles() {
+	l := s.Logger.Named("updater")
+
 	if !atomic.CompareAndSwapUint32(&updating, 0, 1) {
-		s.Logger.Warnf("updateFiles: already running")
+		l.Warnf("already running")
 	}
 	defer atomic.StoreUint32(&updating, 0)
 
 	c := &counter{v: 0}
 	start := time.Now()
-	defer func() { s.Logger.Warnw("updateFiles", "duration", time.Since(start), "count", c.v) }()
+	defer func() { l.Warnw("complete", "duration", time.Since(start), "count", c.v) }()
 
 	total, err := s.db.File.Query().Count()
 	if err != nil {
-		s.Logger.Errorw("updateFiles: total", "error", err)
+		l.Errorw("total", "error", err)
 		return
 	}
-	s.Logger.Debugf("updateFiles: total %d", total)
+	l.Debugf("total %d", total)
 
 	files := make(chan *File, 10)
 
@@ -85,7 +87,7 @@ func (s *Server) updateFiles() {
 	}
 
 	if err := eg.Wait(); err != nil {
-		s.Logger.Errorw("updateFiles", "error", err)
+		l.Errorw("updateFiles", "error", err)
 	}
 }
 
