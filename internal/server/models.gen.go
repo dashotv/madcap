@@ -16,7 +16,12 @@ func setupDatabase(s *Server) error {
 		log: s.Logger.Named("db"),
 	}
 
-	if col, err := grimoire.New[*File](s.Config.Mongo, s.Config.Name, strings.ToLower("File")); err != nil {
+	dbname := s.Config.Name + "_development"
+	if s.Config.Production {
+		dbname = s.Config.Name + "_production"
+	}
+
+	if col, err := grimoire.New[*File](s.Config.Mongo, dbname, strings.ToLower("File")); err != nil {
 		return fmt.Errorf("failed to create File collection: %w", err)
 	} else {
 		db.File = col

@@ -15,9 +15,15 @@ func setupDatabase(s *Server) error {
 	db := &connection{
 		log: s.Logger.Named("db"),
 	}
+
+	dbname := s.Config.Name + "_development"
+	if s.Config.Production {
+		dbname = s.Config.Name + "_production"
+	}
+
 	<%= for (object) in def.Objects { %>
 	<%= if (object.Metadata["model"] == "true") { %>
-	if col, err := grimoire.New[*<%= object.Name %>](s.Config.Mongo, s.Config.Name, strings.ToLower("<%= object.Name %>")); err != nil {
+	if col, err := grimoire.New[*<%= object.Name %>](s.Config.Mongo, dbname, strings.ToLower("<%= object.Name %>")); err != nil {
 		return fmt.Errorf("failed to create <%= object.Name %> collection: %w", err)
 	} else {
 		db.<%= object.Name %> = col
